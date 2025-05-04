@@ -1,0 +1,33 @@
+import tensorflow as tf
+import matplotlib.pyplot as plt
+
+# Step 1: Load built-in Boston housing dataset
+(X_train, y_train), (X_test, y_test) = tf.keras.datasets.boston_housing.load_data()
+
+# Step 2: Build a simple DNN model
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
+    tf.keras.layers.Dense(64, activation='relu'),
+    tf.keras.layers.Dense(1)  # Output layer for regression
+])
+
+# Step 3: Compile the model
+model.compile(optimizer='adam', loss='mse', metrics=['mae'])
+
+# Step 4: Train the model
+history = model.fit(X_train, y_train, epochs=100, validation_split=0.1, verbose=0)
+
+# Step 5: Evaluate the model
+loss, mae = model.evaluate(X_test, y_test, verbose=0)
+print(f"Test MAE: {mae:.2f}")
+
+# Step 6: Predict and plot
+y_pred = model.predict(X_test).flatten()
+
+plt.scatter(y_test, y_pred)
+plt.xlabel("Actual Price")
+plt.ylabel("Predicted Price")
+plt.title("Actual vs Predicted Prices")
+plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red')  # Diagonal line
+plt.grid(True)
+plt.show()
